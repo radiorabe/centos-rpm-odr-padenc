@@ -25,25 +25,23 @@
 # Name of the GitHub repository
 %define reponame ODR-PadEnc
 
-# Note, that at the time of writing there was no official release available.
-# To get a stable reproducable build, a specific Git commit is used instead.
-%global commit0 fa1cd36ab9e7395fb3aacf98e89de2aa08b82527
-%global shortcommit0 fa1cd36
-
 # Conditional build support
 # add --without imagemagick option, i.e. enable imagemagick by default
 %bcond_without imagemagick
 
 
 Name:           odr-padenc
-# Version according to the last ChangeLog entry with short commit hash appended
-Version:        1.2.0.%{shortcommit0}
+Version:        2.0.1
 Release:        1%{?dist}
 Summary:        Opendigitalradio Programme Associated Data encoder 
 
 License:        GPLv3+
 URL:            https://github.com/Opendigitalradio/%{reponame}
-Source0:        https://github.com/Opendigitalradio/%{reponame}/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
+Source0:        https://github.com/Opendigitalradio/%{reponame}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source1:        %{name}@.service
+
+%{?systemd_requires}
+BuildRequires: systemd
 
 %if %{with imagemagick}
 BuildRequires:  ImageMagick-devel
@@ -56,7 +54,7 @@ To encode DLS and Slideshow data, the odr-padenc tool reads images from a
 folder and DLS text from a file, and generates the PAD data for the encoder.
 
 %prep
-%setup -q -n %{reponame}-%{commit0}
+%setup -q -n %{reponame}-%{version}
 
 
 %build
@@ -69,13 +67,37 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 %make_install
 
+# Install the systemd service unit
+install -d %{buildroot}/%{_unitdir}
+install -m 644 %{SOURCE1} %{buildroot}/%{_unitdir}
+
+# Temporary directory for DLS texts, MOT slideshow slides and FIFOs
+install -d %{buildroot}/var/tmp/odr/padenc
+
+
+%pre
+getent group %{name} >/dev/null || groupadd -r %{name}
+getent passwd %{name} >/dev/null || \
+    useradd -r -g %{name} -d /dev/null -m -s /sbin/nologin \
+    -c "%{name} system user account" %{name}
+exit 0
+
 
 %files
 %doc ChangeLog README.md
 %{_bindir}/*
+%{_unitdir}/%{name}@.service
+
+# Install the temporary directory owned by the odr-padenc user/group
+%dir %attr(0755, %{name}, %{name}) /var/tmp/odr/padenc
 
 
 
 %changelog
+* Tue Nov 01 2016 Christian Affolter <c.affolter@purplehaze.ch> - 2.0.1-1
+- Switched from specific Git commit to upstream release
+- Added a dedicated system user/group and systemd service unit template for
+  starting odr-padenc
+
 * Sat Sep 24 2016 Christian Affolter <c.affolter@purplehaze.ch> - 1.2.0.fa1cd36-1
 - Initial release
