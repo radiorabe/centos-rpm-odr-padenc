@@ -31,7 +31,7 @@
 
 
 Name:           odr-padenc
-Version:        2.1.0
+Version:        2.1.1
 Release:        1%{?dist}
 Summary:        Opendigitalradio Programme Associated Data encoder 
 
@@ -39,6 +39,7 @@ License:        GPLv3+
 URL:            https://github.com/Opendigitalradio/%{reponame}
 Source0:        https://github.com/Opendigitalradio/%{reponame}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        %{name}@.service
+Source2:        %{name}.conf
 
 %{?systemd_requires}
 BuildRequires: systemd
@@ -70,6 +71,8 @@ rm -rf $RPM_BUILD_ROOT
 # Install the systemd service unit
 install -d %{buildroot}/%{_unitdir}
 install -m 644 %{SOURCE1} %{buildroot}/%{_unitdir}
+install -d %{buildroot}/%{_tmpfilesdir}
+install -m 644 %{SOURCE2} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
 
 # Temporary directory for DLS texts, MOT slideshow slides and FIFOs
 install -d %{buildroot}/var/tmp/odr/padenc
@@ -87,6 +90,7 @@ exit 0
 %doc ChangeLog README.md
 %{_bindir}/*
 %{_unitdir}/%{name}@.service
+%{_tmpfilesdir}/%{name}.conf
 
 # Install the temporary directory owned by the odr-padenc user/group
 %dir %attr(0755, %{name}, %{name}) /var/tmp/odr/padenc
@@ -94,6 +98,10 @@ exit 0
 
 
 %changelog
+* Sat Mar 24 2017 Lucas Bickel <hairmare@rabe.ch> - 2.1.0-2
+- Bump to upstream version 2.1.1
+- Add systemd-tmpfiles config for /var/tmp/odr
+
 * Sun Feb 19 2017 Christian Affolter <c.affolter@purplehaze.ch> - 2.1.0-1
 - Bump to upstream version 2.1.0
 
