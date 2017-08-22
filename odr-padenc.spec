@@ -31,7 +31,7 @@
 
 
 Name:           odr-padenc
-Version:        2.1.1
+Version:        2.2.0
 Release:        1%{?dist}
 Summary:        Opendigitalradio Programme Associated Data encoder 
 
@@ -98,6 +98,9 @@ exit 0
 
 
 %changelog
+* Tue Aug 22 2017 Christian Affolter <c.affolter@purplehaze.ch> - 2.2.0-1
+- Bump to upstream version 2.2.0
+
 * Sat Mar 24 2017 Lucas Bickel <hairmare@rabe.ch> - 2.1.0-2
 - Bump to upstream version 2.1.1
 - Add systemd-tmpfiles config for /var/tmp/odr
