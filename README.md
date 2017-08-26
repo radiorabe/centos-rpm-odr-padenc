@@ -32,5 +32,5 @@ located within the odr-padnenc temporary instance directory
 ```
 
 So you can then point the <code>dabplus-enc</code> to the
-<code>/var/tmp/odr/padenc/<INSTANCE>pad.fifo</code> FIFO and add your sildes
+`/var/tmp/odr/padenc/<INSTANCE>/pad.fifo` FIFO and add your sildes
 and texts into the appropriate directories.
