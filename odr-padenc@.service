@@ -1,8 +1,7 @@
 [Unit]
 Description=DAB+ DL+/MOT Encoder
 Documentation=http://wiki.opendigitalradio.org/ODR-PadEnc
-Wants=network-online.target
-After=network-online.target
+Before=odr-audioenc@%i.service
 
 [Service]
 ExecStartPre=/bin/mkdir -p /var/tmp/odr/padenc/%i/slides
