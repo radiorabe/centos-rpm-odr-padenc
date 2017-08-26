@@ -25,6 +25,9 @@
 # Name of the GitHub repository
 %define reponame ODR-PadEnc
 
+%define service_user odr-padenc
+%define service_group odr
+
 # Conditional build support
 # add --without imagemagick option, i.e. enable imagemagick by default
 %bcond_without imagemagick
@@ -32,7 +35,7 @@
 
 Name:           odr-padenc
 Version:        2.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Opendigitalradio Programme Associated Data encoder 
 
 License:        GPLv3+
@@ -79,10 +82,10 @@ install -d %{buildroot}/var/tmp/odr/padenc
 
 
 %pre
-getent group %{name} >/dev/null || groupadd -r %{name}
-getent passwd %{name} >/dev/null || \
-    useradd -r -g %{name} -d /dev/null -m -s /sbin/nologin \
-    -c "%{name} system user account" %{name}
+getent group %{service_group} >/dev/null || groupadd -r %{service_group}
+getent passwd %{service_user} >/dev/null || \
+    useradd -r -g %{service_group} -d /dev/null -m -s /sbin/nologin \
+    -c "%{name} system user account" %{service_user}
 exit 0
 
 
@@ -98,6 +101,10 @@ exit 0
 
 
 %changelog
+* Sat Aug 26 2017 Christian Affolter <c.affolter@purplehaze.ch> - 2.2.0-2
+- Use a shared system odr group to play nicely together with odr-audioenc
+- systemd service unit template fixes and enhancements.
+
 * Tue Aug 22 2017 Christian Affolter <c.affolter@purplehaze.ch> - 2.2.0-1
 - Bump to upstream version 2.2.0
 

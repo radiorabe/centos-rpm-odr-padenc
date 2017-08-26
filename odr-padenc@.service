@@ -31,7 +31,7 @@ ExecStart=/usr/bin/odr-padenc \
               $PADENC_MISC_OPTS
 
 User=odr-padenc
-Group=odr-padenc
+Group=odr
 
 [Install]
 WantedBy=multi-user.target
