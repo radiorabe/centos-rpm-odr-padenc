@@ -1,17 +1,37 @@
 [Unit]
 Description=DAB+ DL+/MOT Encoder
 Documentation=http://wiki.opendigitalradio.org/ODR-PadEnc
-Wants=network-online.target
-After=network-online.target
+Before=odr-audioenc@%i.service
 
 [Service]
+# Default pad length
+Environment="PADENC_PAD_LENGTH=58"
+
+# Default charset (ISO/IEC 10646 using UTF-8)
+Environment="PADENC_CHARSET=15"
+
+# Additional options to pass to odr-padenc (e.g. --erase or multiple --dls=)
+Environment="PADENC_MISC_OPTS="
+
 ExecStartPre=/bin/mkdir -p /var/tmp/odr/padenc/%i/slides
 ExecStartPre=/bin/mkdir -p /var/tmp/odr/padenc/%i/texts
-ExecStartPre=/bin/mkfifo /var/tmp/odr/padenc/%i/pad.fifo
-ExecStart=/usr/bin/odr-padenc -c 0 -r -o /var/tmp/odr/padenc/%i/pad.fifo -t /var/tmp/odr/padenc/%i/texts -d /var/tmp/odr/padenc/%i/slides
-ExecStopPost=/bin/rm -f /var/tmp/odr/padenc/%i/pad.fifo
+
+ExecStartPre=/bin/sh -c '/usr/bin/test -p /var/tmp/odr/padenc/%i/pad.fifo || \
+                         /bin/mkfifo -m 640 /var/tmp/odr/padenc/%i/pad.fifo'
+
+ExecStartPre=/usr/bin/touch /var/tmp/odr/padenc/%i/texts/dls-01.txt
+
+ExecStart=/usr/bin/odr-padenc \
+              --dir=/var/tmp/odr/padenc/%i/slides \
+              --output=/var/tmp/odr/padenc/%i/pad.fifo \
+              --dls=/var/tmp/odr/padenc/%i/texts/dls-01.txt \
+              --pad=${PADENC_PAD_LENGTH} \
+              --charset=${PADENC_CHARSET} \
+              --remove-dls \
+              $PADENC_MISC_OPTS
+
 User=odr-padenc
-Group=odr-padenc
+Group=odr
 
 [Install]
 WantedBy=multi-user.target
