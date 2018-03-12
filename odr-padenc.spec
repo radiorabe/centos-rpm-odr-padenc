@@ -1,7 +1,7 @@
 #
 # spec file for package odr-padenc
 #
-# Copyright (c) 2016 - 2017 Radio Bern RaBe
+# Copyright (c) 2016 - 2018 Radio Bern RaBe
 #                           http://www.rabe.ch
 #
 # This program is free software: you can redistribute it and/or
@@ -34,8 +34,8 @@
 
 
 Name:           odr-padenc
-Version:        2.2.0
-Release:        2%{?dist}
+Version:        2.3.0
+Release:        1%{?dist}
 Summary:        Opendigitalradio Programme Associated Data encoder 
 
 License:        GPLv3+
@@ -101,6 +101,9 @@ exit 0
 
 
 %changelog
+* Sun Mar 11 2018 Christian Affolter <c.affolter@purplehaze.ch> - 2.3.0-1
+- Bump to upstream version 2.3.0
+
 * Sat Aug 26 2017 Christian Affolter <c.affolter@purplehaze.ch> - 2.2.0-2
 - Use a shared system odr group to play nicely together with odr-audioenc
 - systemd service unit template fixes and enhancements.
